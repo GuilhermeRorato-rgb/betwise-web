@@ -28,4 +28,10 @@ Instale `requirements.txt`, configure `GEMINI_API_KEY` e execute `python -m stre
 
 ## Escopo
 
+## Fontes regulatórias (consulta em 09/10/2026)
+
+A biblioteca contém o texto da MP 1.394/2026 do Planalto e a notícia de 25/09/2026 do Ministério da Saúde. Os textos capturados e os registros de indexação estão em `sources/`, com URLs, natureza da fonte, data e localização. Total: 374 trechos, incluindo 43 novos trechos. O índice Gemini preserva os 331 vetores anteriores.
+
+Textos regulatórios anteriores recebem indicação de referência histórica. O contexto entregue ao assistente distingue norma e notícia, projeto de lei criminal e MP, além dos diferentes prazos de transição. A consulta não monitora alterações legislativas automaticamente; respostas sobre vigência devem informar a data da base. Os arquivos preservam o conteúdo das fontes, inclusive eventuais divergências, sem corrigir silenciosamente seus números.
+
 O simulador desta publicação mantém a calculadora da V13: volume apostado e probabilidade implícita. Não incorpora a ramificação separada com Monte Carlo. A finalidade é educacional, sem recomendação de apostas ou promessa de retorno.

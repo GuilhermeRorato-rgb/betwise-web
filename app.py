@@ -170,7 +170,7 @@ CANDIDATOS_GLOBAIS = 24
 CANDIDATOS_TEMA = 12
 CHUNKS_PARA_LLM = 4
 MAX_CARACTERES_POR_CHUNK = 3500
-PALAVRAS_TEMA = {'odds': ['odd', 'odds', 'probabilidade implícita', 'probabilidade implicita', 'overround', 'bookmaker', 'margem', 'house edge', 'cotação', 'cotacao'], 'gestao_banca': ['kelly', 'banca', 'quanto apostar', 'fração da banca', 'fracao da banca', 'tamanho da aposta'], 'economia_comportamental': ['falácia do apostador', 'falacia do apostador', 'gambler', 'hot hand', 'sequência de perdas', 'sequencia de perdas', 'sequência de vitórias', 'sequencia de vitorias', 'mais chance depois de perder'], 'regulacao': ['regulação', 'regulacao', 'regulamentação', 'regulamentacao', 'lei', 'legal', 'brasil', 'ministério da fazenda', 'ministerio da fazenda', 'quota fixa'], 'simulacao': ['monte carlo', 'simulação', 'simulacao', 'simular', 'aleatório', 'aleatorio', 'pseudoaleatório', 'pseudoaleatorio'], 'estatistica': ['valor esperado', 'esperança', 'esperanca', 'variância', 'variancia', 'desvio padrão', 'desvio padrao', 'bernoulli', 'binomial', 'lei dos grandes números', 'lei dos grandes numeros', 'teorema central do limite', 'convergência', 'convergencia']}
+PALAVRAS_TEMA = {'odds': ['odd', 'odds', 'probabilidade implícita', 'probabilidade implicita', 'overround', 'bookmaker', 'margem', 'house edge', 'cotação', 'cotacao'], 'gestao_banca': ['kelly', 'banca', 'quanto apostar', 'fração da banca', 'fracao da banca', 'tamanho da aposta'], 'economia_comportamental': ['falácia do apostador', 'falacia do apostador', 'gambler', 'hot hand', 'sequência de perdas', 'sequencia de perdas', 'sequência de vitórias', 'sequencia de vitorias', 'mais chance depois de perder'], 'regulacao': ['medida provisória', 'mp', '1394', '1.394', 'proibição', 'proibidas', 'proibidos', 'proibiu', 'fim das bets', 'lula', 'saques', 'prisão', 'regulação', 'regulacao', 'regulamentação', 'regulamentacao', 'lei', 'legal', 'brasil', 'ministério da fazenda', 'ministerio da fazenda', 'quota fixa'], 'simulacao': ['monte carlo', 'simulação', 'simulacao', 'simular', 'aleatório', 'aleatorio', 'pseudoaleatório', 'pseudoaleatorio'], 'estatistica': ['valor esperado', 'esperança', 'esperanca', 'variância', 'variancia', 'desvio padrão', 'desvio padrao', 'bernoulli', 'binomial', 'lei dos grandes números', 'lei dos grandes numeros', 'teorema central do limite', 'convergência', 'convergencia']}
 PALAVRAS_RELEVANTES = {'odds': ['odd', 'odds', 'probability', 'probabilidade', 'implied', 'implícita', 'implicita', 'overround', 'bookmaker', 'margin', 'margem'], 'gestao_banca': ['kelly', 'capital', 'bankroll', 'banca', 'fraction', 'fração', 'fracao', 'growth'], 'economia_comportamental': ['gambler', 'fallacy', 'hot hand', 'sequence', 'sequência', 'sequencia', 'belief', 'crença'], 'regulacao': ['apostas', 'quota', 'fixa', 'bet', 'brasil', 'regulamentação', 'regulamentacao', 'autorização', 'autorizacao'], 'simulacao': ['simulation', 'simulação', 'simulacao', 'monte carlo', 'random', 'aleatório', 'aleatorio'], 'estatistica': ['expected', 'esperança', 'esperanca', 'variância', 'variancia', 'variance', 'bernoulli', 'binomial', 'central limit', 'grandes números', 'grandes numeros']}
 
 def normalizar(texto):
@@ -298,11 +298,17 @@ def recuperar_contexto(pergunta, colecao):
             where={"subtema": "comportamento_e_apoio"},
             include=["documents", "metadatas", "distances"])
         tematicos.extend(transformar_resultados(resultado))
+    if "regulacao" in temas:
+        resultado = colecao.query(query_embeddings=[embedding], n_results=min(CANDIDATOS_TEMA, colecao.count()),
+            where={"subtema": "mp1394_2026"}, include=["documents", "metadatas", "distances"])
+        tematicos.extend(transformar_resultados(resultado))
     candidatos = unir_candidatos(globais, tematicos)
     candidatos = reranquear(candidatos, tema)
     termos = set(re.findall(r"[a-z]{4,}", normalizar(pergunta))) - {"depois", "cinco", "sobre", "como", "para", "essa", "esse", "considerando", "explique", "qual", "apostas"}
     for c in candidatos:
         texto = normalizar(c["texto"])
+        if "regulacao" in temas and c.get("subtema") == "mp1394_2026":
+            c["score_final"] += 0.25 if c.get("natureza") == "texto_normativo" else 0.15
         if intencoes_comportamentais(pergunta):
             if c.get("subtema") == "comportamento_e_apoio":
                 c["score_final"] += 0.45
@@ -317,6 +323,16 @@ def recuperar_contexto(pergunta, colecao):
             c["score_final"] += 0.18
     candidatos.sort(key=lambda c: c["score_final"], reverse=True)
     selecionados = selecionar_contexto(candidatos)
+    if "regulacao" in temas:
+        normativos = [c for c in candidatos if c.get("natureza") == "texto_normativo"]
+        if normativos:
+            principal = normativos[0]
+            selecionados = [principal] + [c for c in selecionados if c is not principal]
+            selecionados = selecionados[:CHUNKS_PARA_LLM]
+        if re.search(r"202[0-5]|antes|anterior|histor|diferenca|compar", normalizar(pergunta)):
+            antigos = [c for c in candidatos if c["tema"] == "regulacao" and "referência histórica" in c.get("status_temporal", "")]
+            if antigos and not any(c in antigos for c in selecionados):
+                selecionados = selecionados[:CHUNKS_PARA_LLM-1] + [antigos[0]]
     for c in selecionados:
         c["texto_contexto"] = recortar_trecho(c["texto"], consulta)
     return (tema, candidatos, selecionados)
@@ -359,6 +375,7 @@ def transformar_resultados(resultados):
             "pagina": pagina, "chunk": metadata.get("chunk", "?"),
             "tema": metadata.get("tema", "geral"), "subtema": metadata.get("subtema", "geral"),
             "tipo_fonte": metadata.get("tipo_fonte", ""), "url": metadata.get("url", ""),
+            **{k: metadata.get(k, "") for k in ("natureza", "data_publicacao", "data_consulta", "status_temporal", "localizador")},
             "distancia": float(distancia),
         })
     return candidatos
@@ -388,7 +405,7 @@ def unir_candidatos(globais, tematicos):
 
 def formatar_localizacao(trecho):
     if str(trecho.get("tipo_fonte", "")).lower() == "web" or trecho.get("url"):
-        return "Web"
+        return "Web" + (" · " + trecho["localizador"] if trecho.get("localizador") else "")
     pagina = trecho.get("pagina")
     if pagina in (None, "", "?", 0, "0"):
         pagina = trecho.get("pagina_pdf")
@@ -421,6 +438,7 @@ def montar_contexto(trechos):
     # Exatamente os trechos usados na geração ficam disponíveis no diagnóstico.
     return json.dumps([{
         "documento": t["fonte"], "localizacao": formatar_localizacao(t),
+        **{k: t.get(k, "") for k in ("natureza", "data_publicacao", "data_consulta", "status_temporal", "url")},
         "tema": t["tema"], "trecho": t.get("texto_contexto", t["texto"][:MAX_CARACTERES_POR_CHUNK]),
     } for t in trechos], ensure_ascii=False)
 
@@ -447,6 +465,19 @@ def gerar_resposta(pergunta, trechos, historico):
     prompt = f"""{SYSTEM_PROMPT}
 
 Use exclusivamente as evidências documentais abaixo para sustentar fatos.
+Em legislação, informe a data da fonte e respeite seu status temporal. Materiais
+anteriores à MP 1.394/2026 servem como histórico, não comprovam a regra atual.
+Priorize o texto normativo para obrigações, alcance, exceções e prazos; notícia
+institucional fornece contexto e não substitui a norma. Se houver divergência,
+explique-a sem fundir os textos. Atribua expressamente cronogramas da notícia
+ao Ministério da Saúde, sem apresentá-los como citação literal da MP. Diferencie prazo de extinção de autorizações,
+indisponibilização de sites, depósitos e restituição de valores.
+Distinga Medida Provisória, projeto de lei e lei de conversão. As penas de prisão
+descritas na notícia de 25/09/2026 pertencem a um projeto de lei separado: essa
+notícia não comprova sua aprovação. Não diga que a MP foi convertida em lei ou que
+a situação permanece vigente hoje sem evidência atualizada. Quando a pergunta
+pedir a situação atual, diga que a base foi consultada em 09/10/2026 e não faz
+verificação jurídica em tempo real. Não transforme associação em causalidade.
 Se elas forem insuficientes, diga claramente que a base consultada não contém
 informação suficiente para a parte não sustentada; responda a parte sustentada.
 Você pode aplicar definições e deduzir consequências lógicas dos conceitos nos
