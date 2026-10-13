@@ -651,51 +651,5 @@ if pagina == "Assistente":
 
 
 elif pagina == "Simulador":
-    with st.container(height=550, border=False, key="sim_body"):
-        page_header(
-            "Simulador financeiro",
-            "O hábito em números.",
-            "Explore a exposição financeira ao longo do tempo e interprete a probabilidade implícita de uma odd.",
-        )
-        st.warning("Esta versão não modela vitórias, perdas ou retornos. Ela mede exposição financeira e evita criar uma falsa previsão de resultado.")
-    
-        form_col, explain_col = st.columns([1.5, 0.75], gap="large")
-        with form_col:
-            st.subheader("Configure o cenário")
-            c1, c2 = st.columns(2)
-            with c1:
-                valor = st.number_input("Valor médio por aposta (R$)", min_value=0.0, value=30.0, step=5.0)
-                frequencia = st.number_input("Apostas por semana", min_value=0, value=4, step=1)
-            with c2:
-                anos = st.number_input("Horizonte de tempo (anos)", min_value=1, value=5, step=1)
-                odd = st.number_input("Odd média", min_value=1.01, value=1.80, step=0.05)
-    
-            simular = st.button("Calcular cenário", type="primary", use_container_width=True)
-    
-        with explain_col:
-            st.markdown(
-                '<div class="section-card"><div class="panel-title">O que será calculado?</div>'
-                '<div class="topic"><span class="topic-num">01</span><div><b>Total de apostas</b><small>Frequência × 52 semanas × anos</small></div></div>'
-                '<div class="topic"><span class="topic-num">02</span><div><b>Volume financeiro</b><small>Valor médio × total de apostas</small></div></div>'
-                '<div class="topic"><span class="topic-num">03</span><div><b>Probabilidade implícita</b><small>1 ÷ odd, antes da margem</small></div></div>'
-                '</div>', unsafe_allow_html=True,
-            )
-    
-        if simular:
-            total_apostas = frequencia * 52 * anos
-            dinheiro_movimentado = valor * total_apostas
-            probabilidade_implicita = (1 / odd) * 100
-    
-            st.divider()
-            st.subheader("Resultado do cenário")
-            m1, m2, m3 = st.columns(3)
-            m1.metric("Total de apostas", f"{total_apostas:,}".replace(",", "."))
-            m2.metric("Volume financeiro", money_br(dinheiro_movimentado))
-            m3.metric("Probabilidade implícita", f"{probabilidade_implicita:.1f}%".replace(".", ","))
-    
-            st.info(
-                f"Mantendo apostas médias de {money_br(valor)}, {frequencia} vez(es) por semana "
-                f"durante {anos} ano(s), {money_br(dinheiro_movimentado)} passariam por apostas nesse período."
-            )
-            st.caption("Volume apostado não é o mesmo que perda. A distribuição de ganhos e perdas exige um modelo estatístico próprio, que ainda não faz parte deste protótipo.")
-    
+    from interface_simulador import mostrar_simulador
+    mostrar_simulador()

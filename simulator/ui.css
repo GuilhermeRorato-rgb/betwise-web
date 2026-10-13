@@ -1,0 +1,30 @@
+/* Todos os estilos são locais ao simulador; o chat e a navegação permanecem intactos. */
+.st-key-simulator_workspace {font-family:"DM Sans",sans-serif;padding-bottom:28px;}
+.st-key-simulator_workspace .sim-hero {background:#fff;border:1px solid #e3e7ef;border-radius:22px;
+    padding:28px 7%;box-shadow:0 12px 40px #25304705;}
+.st-key-simulator_workspace .sim-hero h1 {font-size:clamp(32px,3.4vw,46px)!important;line-height:1.13!important;
+    letter-spacing:-1.7px;font-weight:750!important;margin:0 0 18px!important;padding:0!important;color:#1f2b40;}
+.st-key-simulator_workspace .sim-hero .hero-accent {color:#8570b4;}
+.st-key-simulator_workspace .sim-hero p {font-size:14px;color:#778195;line-height:1.75;margin:0 0 18px;}
+.st-key-simulator_workspace .ethical-strip {margin:0;background:#f0edfa;border-color:#e2dcf0;color:#645579;}
+.st-key-simulator_workspace [data-testid="stMetric"] {border-color:#e3e7ef;border-radius:16px;padding:18px 20px;}
+.st-key-simulator_workspace [data-testid="stMetricLabel"] p {font-size:12px;color:#69758a;}
+.st-key-simulator_workspace [data-testid="stMetricValue"] {font-size:25px;color:#253047;}
+.st-key-simulator_workspace [data-testid="stHorizontalBlock"]:has([data-testid="stMetric"]) {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;}
+.st-key-simulator_workspace [data-testid="stHorizontalBlock"]:has([data-testid="stMetric"]) > [data-testid="stColumn"] {min-width:0;width:100%;}
+.st-key-simulator_workspace [data-testid="stRadio"] [role="radiogroup"] {gap:8px;}
+.st-key-simulator_workspace [data-testid="stRadio"] label {border:1px solid #e6e8ef;background:#fff;border-radius:10px;padding:8px 10px;margin:0!important;}
+.st-key-simulator_workspace [data-testid="stRadio"] label:has(input:checked) {background:#e4ddfa;border-color:#c3b5f1;color:#352d51;}
+.st-key-simulator_workspace [data-testid="stRadio"] label p {font-size:12px;}
+.st-key-simulator_workspace [data-testid="stPlotlyChart"] {background:#fff;border:1px solid #e3e7ef;border-radius:20px;padding:10px;overflow:hidden;}
+.st-key-simulator_workspace [data-testid="stDataFrame"],.st-key-simulator_workspace [data-testid="stDataEditor"] {border-radius:14px;overflow:hidden;}
+.st-key-simulator_workspace [data-testid="stDownloadButton"] button {border-radius:12px;border-color:#dfe3ec;color:#5f517a;font-weight:600;}
+@media(min-width:1400px) {
+    .st-key-simulator_workspace [data-testid="stHorizontalBlock"]:has([data-testid="stMetric"]) {grid-template-columns:repeat(4,minmax(0,1fr));}
+}
+@media(max-width:700px) {
+    .st-key-simulator_workspace .sim-hero {padding:24px 6%;}
+    .st-key-simulator_workspace .sim-hero h1 {font-size:30px!important;}
+    .st-key-simulator_workspace .ethical-strip {font-size:11px;}
+    .st-key-simulator_workspace [data-testid="stHorizontalBlock"]:has([data-testid="stMetric"]) {grid-template-columns:1fr;}
+}

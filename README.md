@@ -34,4 +34,4 @@ A biblioteca contém o texto da MP 1.394/2026 do Planalto e a notícia de 25/09/
 
 Textos regulatórios anteriores recebem indicação de referência histórica. O contexto entregue ao assistente distingue norma e notícia, projeto de lei criminal e MP, além dos diferentes prazos de transição. A consulta não monitora alterações legislativas automaticamente; respostas sobre vigência devem informar a data da base. Os arquivos preservam o conteúdo das fontes, inclusive eventuais divergências, sem corrigir silenciosamente seus números.
 
-O simulador desta publicação mantém a calculadora da V13: volume apostado e probabilidade implícita. Não incorpora a ramificação separada com Monte Carlo. A finalidade é educacional, sem recomendação de apostas ou promessa de retorno.
+A aba Simulador utiliza o módulo Monte Carlo: distribuição de ganhos e perdas, trajetórias, comparação de investimentos com aportes equivalentes, cenários configuráveis e exportação JSON/CSV. A arquitetura, a biblioteca e os limites do assistente permanecem preservados. Instruções e convenções em `docs/simulador/INTEGRACAO.md`. A finalidade é educacional, sem recomendação de apostas ou promessa de retorno.

@@ -1,0 +1,16 @@
+{
+  "base_commit": "9074a68f19224c9f0f871b156d83e8f8a4a16de7",
+  "agent_prefix_sha256": "93adfb549f52b2ddc17bbd0ed700031f751487a95207efdbe9fce7d85388a9ab",
+  "preserved_files": {
+    ".gitignore": "ae2133bce8d1b17dd84cdcf62a81c330666fca4c467c90408032795519f45b51",
+    "cloud_backend.py": "7a3c7fa0ed19a249336b65813826ba24fcb5c8d7322ee36aa1ee91c67a6688aa",
+    "corpus.json": "066b1bb1b5b1630a68e28e5ce5ffd394955f09d5f9c18b401ab8d1240c996f76",
+    "index_meta.json": "ee274fe26efd271ff94883dab9c93f87c7a57fea9b3630abd3a1ee3c7225a61f",
+    "secrets.example.toml": "88f28142048e8ea9415f36f5699d5359b9389ea6692c2c2c52769b848d1e4680",
+    "vectors.npz": "0310f20542eef2d1376c52952a1644afa5789c34e2f1285d4bf92df36c1ac5d4",
+    ".streamlit/config.toml": "b75322f2bf804779264c42d40bbc0ee0d3974fa4ed84131ab33ddb8947dcf296",
+    "sources/mp1394.txt": "d18f6a00b542c0d5fa78c58f0ac86177be7e019c8330090136eb6e44277ea4c8",
+    "sources/noticia_saude.txt": "c63281f8b4520ea12769a0d42866289b18fd15e621fb7fe4cc6d928968e5bb4e",
+    "sources/novos_registros.json": "3c9eb1954ab448f451501e9a674a888066d0541f3290e71d19c4f06d4ece859d"
+  }
+}
