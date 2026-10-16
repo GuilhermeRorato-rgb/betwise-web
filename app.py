@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 from urllib.parse import urlparse
 import streamlit as st
+from gemini_retry import retry_stream
 from cloud_backend import CloudCollection, embed_query, consume_quota, setting
 
 
@@ -526,18 +527,26 @@ PERGUNTA ATUAL (JSON)
         api_key=obter_chave(),
         http_options={"timeout": 60000, "retry_options": {"attempts": 1}},
     )
-    recebeu_texto = False
-    try:
-        for parte in cliente.models.generate_content_stream(
+    def uma_tentativa():
+        recebeu_texto = False
+        stream = cliente.models.generate_content_stream(
             model=MODELO_GEMINI,
             contents=prompt,
             config={"automatic_function_calling": {"disable": True}},
-        ):
-            if parte.text:
-                recebeu_texto = True
-                yield parte.text
-        if not recebeu_texto:
-            raise RuntimeError("O Gemini não retornou texto. Tente reformular a pergunta.")
+        )
+        try:
+            for parte in stream:
+                if parte.text:
+                    recebeu_texto = True
+                    yield parte.text
+            if not recebeu_texto:
+                raise RuntimeError("O Gemini não retornou texto. Tente reformular a pergunta.")
+        finally:
+            close = getattr(stream, "close", None)
+            if close:
+                close()
+    try:
+        yield from retry_stream(uma_tentativa)
     finally:
         cliente.close()
 

@@ -7,6 +7,8 @@ import tempfile
 import time
 from pathlib import Path
 
+from gemini_retry import retry_call
+
 import numpy as np
 import streamlit as st
 from google import genai
@@ -59,10 +61,10 @@ class CloudCollection:
 
 def embed_query(text, key):
     with genai.Client(api_key=key, http_options={'timeout': 30000, 'retry_options': {'attempts': 1}}) as client:
-        result = client.models.embed_content(
+        result = retry_call(lambda: client.models.embed_content(
             model='gemini-embedding-001', contents=text,
             config=types.EmbedContentConfig(task_type='RETRIEVAL_QUERY', output_dimensionality=768),
-        )
+        ))
     return result.embeddings[0].values
 
 
