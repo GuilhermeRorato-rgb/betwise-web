@@ -19,6 +19,19 @@
 .st-key-simulator_workspace [data-testid="stPlotlyChart"] {background:#fff;border:1px solid #e3e7ef;border-radius:20px;padding:10px;overflow:hidden;}
 .st-key-simulator_workspace [data-testid="stDataFrame"],.st-key-simulator_workspace [data-testid="stDataEditor"] {border-radius:14px;overflow:hidden;}
 .st-key-simulator_workspace [data-testid="stDownloadButton"] button {border-radius:12px;border-color:#dfe3ec;color:#5f517a;font-weight:600;}
+.st-key-simple_workspace {max-width:850px;margin:auto;}
+.st-key-simple_workspace p,.st-key-simple_workspace label p {font-size:16px!important;line-height:1.65;color:#38465e;}
+.st-key-simple_workspace .sim-hero p {color:#536078;}
+.st-key-simple_workspace h2 {font-size:24px!important;letter-spacing:-.5px;}
+.simple-total,.simple-card {background:#fff;border:1px solid #e3e7ef;border-radius:20px;padding:24px;margin:8px 0 16px;}
+.simple-total strong {display:block;font-size:36px;color:#253047;margin:10px 0;}
+.simple-card h3 {font-size:30px!important;color:#253047;padding:12px 0!important;}
+.simple-total span,.simple-card span {font-size:17px;font-weight:600;color:#514268;}
+.simple-save {background:#f0edfa;border-color:#d9d0ef;}
+.risk-grid {display:grid;grid-template-columns:repeat(10,1fr);gap:10px;max-width:360px;margin:20px 0;}
+.risk-dot {display:block;aspect-ratio:1;border-radius:50%;background:#ede9f5;border:1px solid #998bb3;}
+.risk-loss {background:#68518d;border-color:#68518d;}
+@media(max-width:700px) {.simple-total,.simple-card {padding:20px;}.risk-grid {max-width:280px;gap:8px;}}
 @media(min-width:1400px) {
     .st-key-simulator_workspace [data-testid="stHorizontalBlock"]:has([data-testid="stMetric"]) {grid-template-columns:repeat(4,minmax(0,1fr));}
 }

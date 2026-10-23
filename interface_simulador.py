@@ -24,6 +24,24 @@ def reset_inputs():
 
 
 def mostrar_simulador():
+    from simulator.shared import restore, save
+    returning = "bw_sim_mode" not in st.session_state
+    # A cópia permanente sobrevive à remoção de widgets na aba do assistente.
+    if "bw_sim_mode" not in st.session_state:
+        st.session_state["bw_sim_mode"] = st.session_state.get("betwise_mode_saved", "Simples")
+    mode = st.radio("Como você quer usar o simulador?", ["Simples", "Completo"],
+                    horizontal=True, key="bw_sim_mode", on_change=save, args=(st.session_state,))
+    restore(st.session_state, force=returning or mode != st.session_state.get("betwise_mode_saved"))
+    st.session_state["betwise_mode_saved"] = mode
+    st.caption("Simples: três perguntas e uma explicação direta. Completo: todos os ajustes, gráficos e detalhes. Os dois modos usam os mesmos valores e hipóteses.")
+    if mode == "Simples":
+        from simulator.simple import mostrar_simples
+        mostrar_simples()
+    else:
+        mostrar_completo()
+
+
+def mostrar_completo():
 
     for key, value in st.session_state.get("betwise_simulator_inputs", {}).items():
         if key not in st.session_state:
