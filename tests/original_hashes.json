@@ -1,6 +1,6 @@
 {
   "base_commit": "9074a68f19224c9f0f871b156d83e8f8a4a16de7",
-  "agent_prefix_sha256": "93adfb549f52b2ddc17bbd0ed700031f751487a95207efdbe9fce7d85388a9ab",
+  "agent_prefix_sha256": "158f3756109b28e4d126fe7b186e6b624924343f5fb6c184ee63f44a74ed01c2",
   "preserved_files": {
     ".gitignore": "ae2133bce8d1b17dd84cdcf62a81c330666fca4c467c90408032795519f45b51",
     "cloud_backend.py": "7a3c7fa0ed19a249336b65813826ba24fcb5c8d7322ee36aa1ee91c67a6688aa",
